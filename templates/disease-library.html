@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantDetect - AI Plant Identifier & Disease Detector</title>
+    
+    <!-- PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts for Multi-language Support -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+Bengali:wght@400;700&family=Noto+Sans+Tamil:wght@400;700&family=Noto+Sans+Telugu:wght@400;700&family=Noto+Sans+Gujarati:wght@400;700&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+     <header class="sticky-header bg-green-800 text-white shadow-lg">
+    <nav class="container mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="{{ url_for('index') }}" class="flex items-center space-x-2 hover:scale-105 transition">
+                    <span class="text-2xl">🌿</span>
+                    <span class="text-xl font-bold">PlantDetect</span>
+                </a>
+            </div>
+            
+            <!-- Desktop Menu -->
+              <div class="hidden md:flex space-x-6">
+                    <a href="{{ url_for('index') }}" class="header-link font-semibold">Home</a>
+                    <a href="{{ url_for('how_it_works') }}" class="header-link hover:text-green-200 transition">How It Works</a>
+                    <a href="{{ url_for('plant_database') }}" class="header-link hover:text-green-200 transition">Plant Database</a>
+                    <a href="{{ url_for('disease_library') }}" class="header-link hover:text-green-200 transition">Disease Library</a>
+                    <a href="{{ url_for('care_guides') }}" class="header-link hover:text-green-200 transition">Care Guides</a>
+                </div>
+            
+            <!-- Mobile Menu Button -->
+            <button id="mobileMenuBtn" class="md:hidden text-xl p-2 hover:bg-green-700 rounded transition">
+                <i class="fas fa-bars" id="menuIcon"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+          <div id="mobileMenu" class="mobile-menu hidden md:hidden">
+                <div class="container mx-auto px-4 py-4 bg-green-800">
+                    <div class="flex flex-col space-y-4">
+                        <a href="{{ url_for('index') }}" class="header-link py-2 border-b border-green-700 text-white hover:text-green-200">Home</a>
+                        <a href="{{ url_for('how_it_works') }}" class="header-link py-2 border-b border-green-700 text-white hover:text-green-200">How It Works</a>
+                        <a href="{{ url_for('plant_database') }}" class="header-link py-2 border-b border-green-700 text-white hover:text-green-200">Plant Database</a>
+                        <a href="{{ url_for('disease_library') }}" class="header-link py-2 border-b border-green-700 text-white hover:text-green-200">Disease Library</a>
+                        <a href="{{ url_for('care_guides') }}" class="header-link py-2 text-white hover:text-green-200">Care Guides</a>
+                    </div>
+                </div>
+            </div>
+    </nav>
+</header>
+
+    <!-- Disease Library Content -->
+    <main class="flex-1 bg-gray-50 py-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-green-800 mb-4">Plant Disease Library</h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Comprehensive guide to common plant diseases and their treatments</p>
+            </div>
+
+            <!-- Search Section -->
+            <div class="max-w-4xl mx-auto mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1">
+                            <input type="text" placeholder="Search diseases..." 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+                        <select class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option>All Plants</option>
+                            <option>Vegetables</option>
+                            <option>Fruits</option>
+                            <option>Flowers</option>
+                            <option>Herbs</option>
+                        </select>
+                        <button class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition font-semibold">
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diseases Grid -->
+            <div class="max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Disease 1 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+                        <div class="h-48 bg-red-100 flex items-center justify-center">
+                            <span class="text-6xl">🍂</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-xl font-bold text-green-800">Powdery Mildew</h3>
+                                <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">Fungal</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">White powdery spots on leaves and stems, common in humid conditions</p>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center text-red-600">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    <span>Affects: Roses, Cucumbers, Squash</span>
+                                </div>
+                                <div class="flex items-center text-green-600">
+                                    <i class="fas fa-shield-alt mr-2"></i>
+                                    <span>Treatment: Neem oil, Fungicides</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disease 2 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+                        <div class="h-48 bg-yellow-100 flex items-center justify-center">
+                            <span class="text-6xl">🟡</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-xl font-bold text-green-800">Leaf Spot</h3>
+                                <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm">Bacterial</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">Circular brown or black spots on leaves, often with yellow halos</p>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center text-red-600">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    <span>Affects: Tomatoes, Peppers, Trees</span>
+                                </div>
+                                <div class="flex items-center text-green-600">
+                                    <i class="fas fa-shield-alt mr-2"></i>
+                                    <span>Treatment: Copper fungicides</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disease 3 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+                        <div class="h-48 bg-blue-100 flex items-center justify-center">
+                            <span class="text-6xl">💧</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-xl font-bold text-green-800">Root Rot</h3>
+                                <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">Fungal</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">Roots turn brown and mushy, plant wilts despite adequate watering</p>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center text-red-600">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    <span>Affects: Potted plants, Vegetables</span>
+                                </div>
+                                <div class="flex items-center text-green-600">
+                                    <i class="fas fa-shield-alt mr-2"></i>
+                                    <span>Treatment: Improve drainage</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disease 4 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+                        <div class="h-48 bg-purple-100 flex items-center justify-center">
+                            <span class="text-6xl">🐛</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-xl font-bold text-green-800">Aphid Infestation</h3>
+                                <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm">Pest</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">Small green/black insects on new growth, leaves curl and distort</p>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center text-red-600">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    <span>Affects: Most plants, Roses</span>
+                                </div>
+                                <div class="flex items-center text-green-600">
+                                    <i class="fas fa-shield-alt mr-2"></i>
+                                    <span>Treatment: Insecticidal soap</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disease 5 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+                        <div class="h-48 bg-orange-100 flex items-center justify-center">
+                            <span class="text-6xl">🥀</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-xl font-bold text-green-800">Blight</h3>
+                                <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm">Fungal</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">Rapid wilting and browning of leaves, spreads quickly in wet weather</p>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center text-red-600">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    <span>Affects: Tomatoes, Potatoes</span>
+                                </div>
+                                <div class="flex items-center text-green-600">
+                                    <i class="fas fa-shield-alt mr-2"></i>
+                                    <span>Treatment: Remove affected parts</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disease 6 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+                        <div class="h-48 bg-green-100 flex items-center justify-center">
+                            <span class="text-6xl">🦠</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-xl font-bold text-green-800">Rust</h3>
+                                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">Fungal</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">Orange or brown pustules on leaf undersides, leaves yellow and drop</p>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center text-red-600">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    <span>Affects: Beans, Roses, Hollyhocks</span>
+                                </div>
+                                <div class="flex items-center text-green-600">
+                                    <i class="fas fa-shield-alt mr-2"></i>
+                                    <span>Treatment: Sulfur-based fungicides</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prevention Tips -->
+                <div class="mt-16 bg-white rounded-xl shadow-lg p-8">
+                    <h2 class="text-3xl font-bold text-green-800 mb-6 text-center">Disease Prevention Tips</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-green-100 p-3 rounded-lg">
+                                <i class="fas fa-tint text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">Proper Watering</h4>
+                                <p class="text-gray-600">Water at the base of plants to keep leaves dry and prevent fungal growth</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-green-100 p-3 rounded-lg">
+                                <i class="fas fa-sun text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">Adequate Spacing</h4>
+                                <p class="text-gray-600">Provide enough space between plants for air circulation</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-green-100 p-3 rounded-lg">
+                                <i class="fas fa-recycle text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">Crop Rotation</h4>
+                                <p class="text-gray-600">Rotate crops annually to prevent soil-borne diseases</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-green-100 p-3 rounded-lg">
+                                <i class="fas fa-seedling text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">Healthy Soil</h4>
+                                <p class="text-gray-600">Maintain soil health with compost and organic matter</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+     <footer class="bg-green-900 text-white mt-auto">
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-6">
+            <div class="md:col-span-2">
+                <div class="flex items-center mb-4">
+                    <span class="text-2xl mr-2">🌿</span>
+                    <h3 class="text-xl font-bold">PlantDetect</h3>
+                </div>
+                <p class="text-green-200 mb-4 text-sm">
+                    AI-powered plant identification and disease detection for gardeners, farmers, and plant enthusiasts.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-green-300 hover:text-white transition" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-green-300 hover:text-white transition" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/its_me_furkhan01?igsh=MTRhMWZjMDl4eWthZw==" class="text-green-300 hover:text-white transition" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/meraj-mohammad-28831032a" class="text-green-300 hover:text-white transition" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold text-lg mb-4 border-b border-green-700 pb-2">Quick Links</h4>
+                <ul class="space-y-2">
+                    <li><a href="{{ url_for('index') }}" class="text-green-300 hover:text-white transition text-sm">Home</a></li>
+                    <li><a href="{{ url_for('how_it_works') }}" class="text-green-300 hover:text-white transition text-sm">How It Works</a></li>
+                    <li><a href="{{ url_for('plant_database') }}" class="text-green-300 hover:text-white transition text-sm">Plant Database</a></li>
+                    <li><a href="{{ url_for('disease_library') }}" class="text-green-300 hover:text-white transition text-sm">Disease Library</a></li>
+                    <li><a href="{{ url_for('care_guides') }}" class="text-green-300 hover:text-white transition text-sm">Care Guides</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold text-lg mb-4 border-b border-green-700 pb-2">Contact Us</h4>
+                <ul class="space-y-2 text-sm text-green-300">
+                    <li class="flex items-center"><i class="fas fa-envelope mr-2 w-4"></i><span>merajmohammed00123@gmail.com</span></li>
+                    <li class="flex items-center"><i class="fas fa-phone mr-2 w-4"></i><span>+91 8329492479</span></li>
+                    <li class="flex items-center"><i class="fas fa-map-marker-alt mr-2 w-4"></i><span>Mumbai, India</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-green-700 pt-6 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0 text-center md:text-left">
+                <p class="text-green-300 text-sm">&copy; 2024 PlantDetect. All rights reserved.</p>
+            </div>
+            <div class="flex space-x-6 text-sm">
+                <a href="{{ url_for('privacy_policy') }}" class="text-green-300 hover:text-white transition">Privacy Policy</a>
+                <a href="{{ url_for('terms_of_service') }}" class="text-green-300 hover:text-white transition">Terms of Service</a>
+                <a href="{{ url_for('cookie_policy') }}" class="text-green-300 hover:text-white transition">Cookie Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+     <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+</body>
+</html>

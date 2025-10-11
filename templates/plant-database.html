@@ -1,0 +1,169 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Database - PlantDetect</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Same Header (update active link) -->
+    <header class="sticky-header bg-green-800 text-white shadow-lg">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <a href="{{ url_for('index') }}" class="flex items-center space-x-2 hover:scale-105 transition">
+                        <span class="text-2xl">🌿</span>
+                        <span class="text-xl font-bold">PlantDetect</span>
+                    </a>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-6">
+                    <a href="{{ url_for('index') }}" class="header-link hover:text-green-200 transition">Home</a>
+                    <a href="{{ url_for('how_it_works') }}" class="header-link hover:text-green-200 transition">How It Works</a>
+                    <a href="{{ url_for('plant_database') }}" class="header-link font-semibold">Plant Database</a>
+                    <a href="{{ url_for('disease_library') }}" class="header-link hover:text-green-200 transition">Disease Library</a>
+                    <a href="{{ url_for('care_guides') }}" class="header-link hover:text-green-200 transition">Care Guides</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden text-xl p-2 hover:bg-green-700 rounded transition">
+                    <i class="fas fa-bars" id="menuIcon"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="mobile-menu hidden md:hidden">
+                <div class="container mx-auto px-4 py-4 bg-green-800">
+                    <div class="flex flex-col space-y-4">
+                        <a href="{{ url_for('index') }}" class="header-link py-2 border-b border-green-700 text-white hover:text-green-200">Home</a>
+                        <a href="{{ url_for('how_it_works') }}" class="header-link py-2 border-b border-green-700 text-white hover:text-green-200">How It Works</a>
+                        <a href="{{ url_for('plant_database') }}" class="header-link py-2 border-b border-green-700 text-white hover:text-green-200">Plant Database</a>
+                        <a href="{{ url_for('disease_library') }}" class="header-link py-2 border-b border-green-700 text-white hover:text-green-200">Disease Library</a>
+                        <a href="{{ url_for('care_guides') }}" class="header-link py-2 text-white hover:text-green-200">Care Guides</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 py-12 bg-green-50">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h1 class="text-4xl font-bold text-green-800 text-center mb-8">Plant Database</h1>
+                <p class="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+                    Explore our comprehensive database of plants. Use the AI identification tool to discover 
+                    detailed information about any plant species.
+                </p>
+
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-green-700 mb-4">Coming Soon!</h2>
+                        <p class="text-gray-600 mb-6">
+                            Our plant database feature is currently under development. We're building a comprehensive 
+                            collection of plant information with detailed care guides, growing conditions, and 
+                            identification features.
+                        </p>
+                        <div class="flex justify-center gap-4">
+                            <a href="{{ url_for('index') }}" 
+                               class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                                Identify Plants Now
+                            </a>
+                            <a href="{{ url_for('care_guides') }}" 
+                               class="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white font-bold py-3 px-6 rounded-lg transition">
+                                View Care Guides
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-green-50 rounded-lg p-6">
+                            <h3 class="text-xl font-bold text-green-800 mb-4">🌿 What to Expect</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• 10,000+ plant species database</li>
+                                <li>• Detailed growing conditions</li>
+                                <li>• Seasonal care instructions</li>
+                                <li>• Pest and disease information</li>
+                                <li>• Propagation techniques</li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-6">
+                            <h3 class="text-xl font-bold text-blue-800 mb-4">📱 Available Now</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• AI Plant Identification</li>
+                                <li>• Disease Detection</li>
+                                <li>• Multi-language Support</li>
+                                <li>• PDF Report Generation</li>
+                                <li>• Real-time Analysis</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+     <footer class="bg-green-900 text-white mt-auto">
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-6">
+            <div class="md:col-span-2">
+                <div class="flex items-center mb-4">
+                    <span class="text-2xl mr-2">🌿</span>
+                    <h3 class="text-xl font-bold">PlantDetect</h3>
+                </div>
+                <p class="text-green-200 mb-4 text-sm">
+                    AI-powered plant identification and disease detection for gardeners, farmers, and plant enthusiasts.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-green-300 hover:text-white transition" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-green-300 hover:text-white transition" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/its_me_furkhan01?igsh=MTRhMWZjMDl4eWthZw==" class="text-green-300 hover:text-white transition" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/meraj-mohammad-28831032a" class="text-green-300 hover:text-white transition" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold text-lg mb-4 border-b border-green-700 pb-2">Quick Links</h4>
+                <ul class="space-y-2">
+                    <li><a href="{{ url_for('index') }}" class="text-green-300 hover:text-white transition text-sm">Home</a></li>
+                    <li><a href="{{ url_for('how_it_works') }}" class="text-green-300 hover:text-white transition text-sm">How It Works</a></li>
+                    <li><a href="{{ url_for('plant_database') }}" class="text-green-300 hover:text-white transition text-sm">Plant Database</a></li>
+                    <li><a href="{{ url_for('disease_library') }}" class="text-green-300 hover:text-white transition text-sm">Disease Library</a></li>
+                    <li><a href="{{ url_for('care_guides') }}" class="text-green-300 hover:text-white transition text-sm">Care Guides</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold text-lg mb-4 border-b border-green-700 pb-2">Contact Us</h4>
+                <ul class="space-y-2 text-sm text-green-300">
+                    <li class="flex items-center"><i class="fas fa-envelope mr-2 w-4"></i><span>merajmohammed00123@gmail.com</span></li>
+                    <li class="flex items-center"><i class="fas fa-phone mr-2 w-4"></i><span>+91 8329492479</span></li>
+                    <li class="flex items-center"><i class="fas fa-map-marker-alt mr-2 w-4"></i><span>Mumbai, India</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-green-700 pt-6 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0 text-center md:text-left">
+                <p class="text-green-300 text-sm">&copy; 2024 PlantDetect. All rights reserved.</p>
+            </div>
+            <div class="flex space-x-6 text-sm">
+                <a href="{{ url_for('privacy_policy') }}" class="text-green-300 hover:text-white transition">Privacy Policy</a>
+                <a href="{{ url_for('terms_of_service') }}" class="text-green-300 hover:text-white transition">Terms of Service</a>
+                <a href="{{ url_for('cookie_policy') }}" class="text-green-300 hover:text-white transition">Cookie Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

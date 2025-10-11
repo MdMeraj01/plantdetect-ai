@@ -1,0 +1,671 @@
+ /* Base Styles */
+body {
+    background: linear-gradient(135deg, #74c69d 0%, #52b788 50%, #40916c 100%);
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+    padding-top: 80px;
+}
+
+/* Skip Link for Accessibility */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #000;
+    color: white;
+    padding: 8px;
+    z-index: 100;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Upload Area Styles */
+.upload-area {
+    transition: all 0.3s ease;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-area:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.upload-area.drag-over {
+    background-color: #dcfce7;
+    border-color: #22c55e;
+    border-style: solid;
+    transform: scale(1.02);
+}
+
+.upload-area.success-state {
+    border-color: #10b981;
+    background-color: #f0fdf4;
+}
+
+.upload-area.error-state {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    border: 4px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top: 4px solid #fff;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Result Animation */
+.result-card {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Progress Bar Animation */
+.progress-bar {
+    transition: width 0.3s ease;
+}
+
+/* Button hover effects */
+.btn-hover {
+    transition: all 0.3s ease;
+}
+
+.btn-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Image preview styles */
+.preview-container {
+    position: relative;
+    display: inline-block;
+}
+
+.preview-container img {
+    max-height: 300px;
+    object-fit: contain;
+}
+
+/* Text responsiveness */
+.responsive-text {
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+}
+
+/* Focus styles for accessibility */
+button:focus, 
+input:focus, 
+label:focus {
+    outline: 2px solid #22c55e;
+    outline-offset: 2px;
+}
+
+/* High contrast support */
+@media (prefers-contrast: high) {
+    .upload-area {
+        border-width: 3px;
+    }
+    
+    .result-card {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .upload-area,
+    .result-card,
+    button {
+        transition: none;
+    }
+    
+    .loading-spinner {
+        animation: none;
+    }
+}
+
+/* Footer Styles */
+footer {
+    background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
+}
+
+footer a:hover {
+    transform: translateY(-1px);
+}
+
+/* Newsletter input focus */
+footer input:focus {
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
+}
+
+/* Social media icons */
+footer .fab, footer .fas {
+    transition: all 0.3s ease;
+}
+
+footer a:hover .fab,
+footer a:hover .fas {
+    transform: scale(1.2);
+}
+
+/* Smooth scroll for footer links */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Sticky Header Styles */
+.sticky-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+    transition: all 0.3s ease;
+}
+
+.sticky-header.scrolled {
+    background: rgba(21, 128, 61, 0.98);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+/* Mobile Menu Styles */
+.mobile-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(21, 128, 61, 0.98);
+    transform: translateY(-10px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Header Links */
+.header-link {
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.header-link:hover {
+    color: #bbf7d0;
+}
+
+/* Camera Styles */
+.camera-section {
+    transition: all 0.3s ease;
+}
+
+.camera-preview {
+    min-height: 150px;
+    transition: all 0.3s ease;
+}
+
+.camera-preview video, .camera-preview canvas {
+    max-height: 200px;
+    border: 2px solid #3b82f6;
+    border-radius: 8px;
+    background: #000;
+}
+
+.camera-active .camera-preview {
+    border-color: #10b981;
+    background: #f0fdf4;
+}
+
+.camera-error .camera-preview {
+    border-color: #ef4444;
+    background: #fef2f2;
+}
+
+/* Camera permission styles */
+.camera-permission {
+    border-color: #f59e0b;
+    background-color: #fffbeb;
+}
+
+/* Upload Options Grid */
+.upload-option {
+    transition: all 0.3s ease;
+    height: fit-content;
+}
+
+.upload-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Export Button Styles */
+.export-loading {
+    position: relative;
+    color: transparent;
+}
+
+.export-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top: 2px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Additional Info Styles */
+.additional-info {
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Info cards styling */
+.info-card {
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Care tips styling */
+.care-tips li {
+    padding: 2px 0;
+    transition: color 0.3s ease;
+}
+
+.care-tips li:hover {
+    color: #166534;
+}
+
+/* Button animations */
+.btn-camera {
+    transition: all 0.3s ease;
+}
+
+.btn-camera:active {
+    transform: scale(0.95);
+}
+
+/* Success Message for Exports */
+.export-success {
+    animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; transform: translateY(-10px); }
+    10%, 90% { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .upload-option {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+    
+    .upload-area {
+        min-height: 150px;
+        padding: 1.5rem;
+    }
+    
+    .upload-area:hover {
+        transform: none;
+    }
+    
+    .grid-cols-1 {
+        gap: 1rem;
+    }
+    
+    .upload-option {
+        padding: 1rem;
+    }
+    
+    .camera-preview {
+        min-height: 120px;
+    }
+    
+    footer .grid {
+        gap: 2rem;
+    }
+    
+    footer .text-sm {
+        font-size: 0.875rem;
+    }
+    
+    .mobile-menu:not(.hidden) {
+        display: block;
+    }
+}
+
+/* Real-time Progress Bar Styles */
+#realProgressBar {
+    transition: width 0.3s ease-out;
+    background: linear-gradient(90deg, #10b981, #34d399, #10b981);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Progress bar states */
+.progress-complete {
+    background: #10b981 !important;
+    animation: none !important;
+}
+
+.progress-error {
+    background: #ef4444 !important;
+    animation: none !important;
+}
+
+/* Loading spinner animation */
+.loading-spinner {
+    border: 3px solid #f3f4f6;
+    border-radius: 50%;
+    border-top: 3px solid #10b981;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Progress status text animation */
+#progressStatus {
+    transition: all 0.3s ease;
+}
+
+/* Mobile responsive progress bar */
+@media (max-width: 640px) {
+    .max-w-md {
+        max-width: 100%;
+    }
+    
+    #progressStatus {
+        font-size: 0.7rem;
+    }
+}
+
+ @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 1.2s ease-in-out forwards;
+  }
+
+  .animate-fadeInUp {
+    animation: fadeInUp 1.2s ease-in-out forwards;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .delay-100 { animation-delay: 0.2s; }
+  .delay-200 { animation-delay: 0.4s; }
+  .delay-300 { animation-delay: 0.6s; }
+
+/* Language Selector Styles */
+.language-btn {
+    transition: all 0.3s ease;
+    min-width: 80px;
+}
+
+.language-btn.active {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #059669;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.language-btn:hover:not(.active) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* RTL support for Urdu */
+[dir="rtl"] {
+    text-align: right;
+}
+
+.urdu-text {
+    font-family: 'Arial', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.8;
+}
+
+
+
+
+
+/* Multi-language font support */
+.multi-lang {
+    font-family: 'Noto Sans', 'Noto Sans Devanagari', 'Noto Sans Bengali', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Gujarati', 'Noto Sans Arabic', sans-serif;
+}
+
+/* PDF specific styles */
+.export-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.export-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Loading animation */
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e5e7eb;
+    border-top: 4px solid #10b981;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Animation classes */
+.animate-fadeIn {
+    animation: fadeIn 1s ease-in;
+}
+
+.animate-fadeInUp {
+    animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Delay utilities */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+
+/* Upload area states */
+.upload-area.drag-over {
+    border-color: #10b981;
+    background-color: #f0fdf4;
+}
+
+.upload-area.success-state {
+    border-color: #10b981;
+    background-color: #f0fdf4;
+}
+
+.upload-area.error-state {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+/* Camera section states */
+.camera-section.camera-active {
+    border-color: #3b82f6;
+    background-color: #f0f9ff;
+}
+
+.camera-section.camera-error {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+/* Sticky header */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.sticky-header.scrolled {
+    background-color: rgba(22, 101, 52, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+/* Mobile menu */
+.mobile-menu {
+    transition: all 0.3s ease;
+}
+
+.mobile-menu.active {
+    display: block;
+}
+
+/* Header links */
+.header-link {
+    position: relative;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.header-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Language buttons */
+.language-btn.active {
+    background-color: #10b981;
+    color: white;
+    border-color: #10b981;
+}
+
+/* Upload options */
+.upload-option {
+    transition: all 0.3s ease;
+}
+
+.upload-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Result card */
+.result-card {
+    border-left: 4px solid #10b981;
+}
+
+/* Export buttons */
+#exportButtons button {
+    transition: all 0.3s ease;
+}
+
+#exportButtons button:hover {
+    transform: translateY(-2px);
+}
