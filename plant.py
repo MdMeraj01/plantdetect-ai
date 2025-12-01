@@ -4,6 +4,10 @@ from flask_cors import CORS
 import requests
 import os
 from dotenv import load_dotenv
+import logging
+import json
+import re
+import time
 
 load_dotenv()
 
@@ -14,6 +18,69 @@ CORS(app)
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
 print(f"GEMINI_API_KEY loaded: {'Yes' if GEMINI_API_KEY else 'No'}")  # Debug line
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Rate limiting storage
+request_times = {}
+
+def rate_limit_exceeded(ip):
+    """Simple rate limiting to prevent abuse"""
+    current_time = time.time()
+    if ip in request_times:
+        if current_time - request_times[ip] < 2:  # 2 seconds between requests
+            return True
+    request_times[ip] = current_time
+    return False
+
+def safe_json_parse(text):
+    """Safely parse JSON with multiple fallback methods"""
+    if not text:
+        return None
+    
+    # Method 1: Try direct JSON parsing
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+    
+    # Method 2: Try to extract JSON object using regex
+    json_match = re.search(r'\{[^{}]*\}', text)
+    if json_match:
+        try:
+            return json.loads(json_match.group())
+        except json.JSONDecodeError:
+            pass
+    
+    # Method 3: Try to fix common JSON issues
+    fixed_text = text.strip()
+    
+    # Remove any text before first { and after last }
+    start = fixed_text.find('{')
+    end = fixed_text.rfind('}') + 1
+    if start != -1 and end != 0:
+        fixed_text = fixed_text[start:end]
+    
+    # Fix missing quotes around keys
+    fixed_text = re.sub(r'(\w+)\s*:', r'"\1":', fixed_text)
+    
+    # Fix missing quotes around string values
+    fixed_text = re.sub(r':\s*([^"{}\[\],\s]+)(?=[,\}])', r': "\1"', fixed_text)
+    
+    # Fix trailing commas
+    fixed_text = re.sub(r',\s*}', '}', fixed_text)
+    fixed_text = re.sub(r',\s*]', ']', fixed_text)
+    
+    try:
+        return json.loads(fixed_text)
+    except json.JSONDecodeError:
+        pass
+    
+    # Method 4: If all else fails, create a fallback response
+    logger.warning(f"Could not parse JSON from response: {text}")
+    return None
 
 # Route for main page
 @app.route('/')
@@ -52,6 +119,14 @@ def cookie_policy():
 # API Route for plant analysis
 @app.route('/api/analyze-plant', methods=['POST'])
 def analyze_plant():
+    client_ip = request.remote_addr
+    
+    # Rate limiting check
+    if rate_limit_exceeded(client_ip):
+        return jsonify({
+            'error': 'Please wait a moment before making another request'
+        }), 429
+    
     try:
         # Debug: Check if API key is available
         if not GEMINI_API_KEY:
@@ -124,41 +199,96 @@ Now analyze the plant leaf image and provide comprehensive information."""
             "contents": [{
                 "parts": [
                     {"text": prompt},
-                    {"inlineData": {"mimeType": mime_type, "data": image_data}}
+                    {"inline_data": {"mime_type": mime_type, "data": image_data}}
                 ]
             }],
-            "generationConfig": {
-                "responseMimeType": "application/json",
+            "generation_config": {
                 "temperature": 0.2,
-                "topK": 40,
-                "topP": 0.8
-            }
+                "top_p": 0.8,
+                "top_k": 40,
+                "max_output_tokens": 2048,
+                "response_mime_type": "application/json"
+            },
+            "safety_settings": [
+                {
+                    "category": "HARM_CATEGORY_HARASSMENT",
+                    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                    "category": "HARM_CATEGORY_HATE_SPEECH",
+                    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                }
+            ]
         }
 
         print(f"Making API call to Gemini with image data length: {len(image_data)}")  # Debug
 
-        # Gemini API call
-        api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key={GEMINI_API_KEY}"
+        # Gemini API call with updated model
+        api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key={GEMINI_API_KEY}"
         
-        response = requests.post(api_url, json=payload, timeout=30)
-        response.raise_for_status()
+        response = requests.post(api_url, json=payload, timeout=45)
         
-        data = response.json()
-        candidate = data.get('candidates', [{}])[0]
-        json_text = candidate.get('content', {}).get('parts', [{}])[0].get('text')
+        if response.status_code != 200:
+            logger.error(f"Gemini API error: {response.text}")
+            error_msg = "AI service temporarily unavailable"
+            try:
+                error_data = response.json()
+                if 'error' in error_data:
+                    error_msg = error_data['error'].get('message', error_msg)
+            except:
+                pass
+                
+            return jsonify({
+                'error': error_msg
+            }), 500
+        
+        result = response.json()
+        
+        # Extract response text safely
+        candidates = result.get('candidates', [])
+        if not candidates:
+            return jsonify({'error': 'No response from AI model'}), 500
+            
+        content = candidates[0].get('content', {})
+        parts = content.get('parts', [])
+        if not parts:
+            return jsonify({'error': 'No content in response'}), 500
+            
+        response_text = parts[0].get('text', '').strip()
+        
+        if not response_text:
+            return jsonify({'error': 'Empty response from AI'}), 500
+        
+        # Parse the response safely
+        parsed_data = safe_json_parse(response_text)
+        
+        if parsed_data:
+            return jsonify(parsed_data)
+        else:
+            # If we can't parse JSON, return the raw text with error handling
+            if "error" in response_text.lower() or "not identify" in response_text.lower():
+                return jsonify({"error": response_text[:200]})
+            return jsonify({
+                "error": "Could not parse AI response. Please try again with a clearer image.",
+                "raw_response": response_text[:500]
+            })
 
-        if not json_text:
-            return jsonify({'error': 'No response received from AI'}), 500
-
-        import json
-        parsed_data = json.loads(json_text)
-        return jsonify(parsed_data)
-
+    except requests.exceptions.Timeout:
+        logger.error("Request timeout")
+        return jsonify({'error': 'AI analysis timed out. Please try again.'}), 500
     except requests.exceptions.RequestException as e:
-        print(f"API request error: {str(e)}")  # Debug
+        logger.error(f"API request error: {str(e)}")
         return jsonify({'error': f'API request failed: {str(e)}'}), 500
     except Exception as e:
-        print(f"Server error: {str(e)}")  # Debug
+        logger.error(f"Server error: {str(e)}")
         return jsonify({'error': f'Server error: {str(e)}'}), 500
 
 @app.route('/health', methods=['GET'])
@@ -167,7 +297,9 @@ def health_check():
     return jsonify({
         'status': 'healthy', 
         'message': 'PlantDetect API is running',
-        'api_key': api_status
+        'api_key': api_status,
+        'timestamp': time.time(),
+        'version': '2.0'
     })
 
 if __name__ == '__main__':
